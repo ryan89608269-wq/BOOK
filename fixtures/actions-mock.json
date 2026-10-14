@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "questions": [
+    {"stable_id":"MOCK-Q001","subject":"電子學","chapter":"二極體","error_type":"觀念不清","next_review_at":"2025-01-01T19:00:00+08:00","stage":0,"mastery":0.2,"source":"模擬考","difficulty":3,"status":"active","image_reference":"","explanation":"","prompt":"理想二極體導通條件？"},
+    {"stable_id":"MOCK-Q002","subject":"基本電學","chapter":"節點電壓法","error_type":"計算失誤","next_review_at":"2025-01-02T19:00:00+08:00","stage":1,"mastery":0.4,"source":"模擬考","difficulty":3,"status":"active","image_reference":"","explanation":"","prompt":"求節點電壓。"}
+  ],
+  "reviews": [
+    {"question_id":"MOCK-Q001","reviewed_at":"2025-01-01T19:00:00+08:00","correct":false,"duration_seconds":120,"confidence":2}
+  ]
+}

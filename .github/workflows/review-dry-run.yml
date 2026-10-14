@@ -1,0 +1,20 @@
+name: Manual dry-run bootstrap
+on:
+  workflow_dispatch:
+    inputs:
+      business_date:
+        description: 'Taiwan date YYYY-MM-DD (optional)'
+        required: false
+        type: string
+      since_date:
+        description: 'First missed Taiwan date (optional)'
+        required: false
+        type: string
+permissions:
+  contents: read
+jobs:
+  bootstrap:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - run: echo 'Select phase10-bc-test for the reviewed synthetic dry-run workflow.'
