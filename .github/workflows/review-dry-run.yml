@@ -1,4 +1,4 @@
-name: Manual dry-run bootstrap
+name: Phase 10 BC synthetic review dry-run
 on:
   workflow_dispatch:
     inputs:
@@ -13,8 +13,34 @@ on:
 permissions:
   contents: read
 jobs:
-  bootstrap:
+  preview:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 10
     steps:
-      - run: echo 'Select phase10-bc-test for the reviewed synthetic dry-run workflow.'
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install free test dependencies
+        run: python -m pip install pytest tzdata
+      - name: Run synthetic schedule tests
+        run: python -m pytest -q
+      - name: Generate read-only Taiwan-day preview
+        shell: bash
+        env:
+          BUSINESS_DATE: ${{ inputs.business_date }}
+          SINCE_DATE: ${{ inputs.since_date }}
+        run: |
+          set -euo pipefail
+          args=()
+          if [[ -n "$BUSINESS_DATE" ]]; then args+=(--business-date "$BUSINESS_DATE"); fi
+          if [[ -n "$SINCE_DATE" ]]; then args+=(--since-date "$SINCE_DATE"); fi
+          python -m public_review "${args[@]}" > review-dry-run.json
+          python -c 'import json; r=json.load(open("review-dry-run.json",encoding="utf-8")); assert r["status"] == "dry-run" and r["remote_writes"] == 0 and r["scope"] == "synthetic-public-fixture"; print("Synthetic dry-run report verified")'
+      - name: Upload synthetic report
+        uses: actions/upload-artifact@v4
+        with:
+          name: synthetic-review-dry-run-${{ github.run_id }}-${{ github.run_attempt }}
+          path: review-dry-run.json
+          if-no-files-found: error
+          retention-days: 7
